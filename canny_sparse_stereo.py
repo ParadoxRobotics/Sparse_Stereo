@@ -13,18 +13,17 @@ orb = cv2.ORB_create(nfeatures=5000)
 # Init feature matcher
 matcher = cv2.DescriptorMatcher_create("BruteForce")
 # import image
-left = cv2.imread("im0.png", cv2.IMREAD_GRAYSCALE)
+left = cv2.imread("C:/Users/quentin.munch/Desktop/Sparse_Stereo-master/im0.png", cv2.IMREAD_GRAYSCALE)
 left = cv2.resize(left,(1280,800))
-right = cv2.imread("im1.png", cv2.IMREAD_GRAYSCALE)
+right = cv2.imread("C:/Users/quentin.munch/Desktop/Sparse_Stereo-master/im1.png", cv2.IMREAD_GRAYSCALE)
 right = cv2.resize(right,(1280,800))
 
-left_canny = cv2.Canny(left,50,50)
-right_canny = cv2.Canny(right,50,50)
+left_canny = cv2.bilateralFilter(left,1,10,10)
+right_canny = cv2.bilateralFilter(right,1,10,10)
 
 # find keypoints
 kp_left, d_left = orb.detectAndCompute(left_canny, None)
 kp_right, d_right = orb.detectAndCompute(right_canny, None)
-
 
 # make match
 matches = matcher.match(d_left, d_right)
@@ -33,7 +32,7 @@ good_match = [m for m in matches if abs(kp_left[m.queryIdx].pt[1] - kp_right[m.t
 print(good_match)
 # print matches
 img3 = cv2.drawMatches(left, kp_left, right, kp_right, good_match, None, flags=2)
-plt.imshow(left_canny)
+plt.imshow(img3)
 
 # calculate disparity with good match
 for m in good_match:
